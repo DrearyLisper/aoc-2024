@@ -6,7 +6,7 @@ See https://adventofcode.com/2024 for problems.
 
 ## Day 1: Historian Hysteria
 
-[Full Description](https://github.com/DrearyLisper/aoc-2024/tree/main/src/01/main.rs)
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/01/main.rs)
 
 ``` bash
 aoc-2024$ cargo run --bin 01 --release -q
@@ -16,7 +16,7 @@ aoc-2024$ cargo run --bin 01 --release -q
 
 ## Day 2: Red-Nosed Reports
 
-[Full Description](https://github.com/DrearyLisper/aoc-2024/tree/main/src/02/main.rs)
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/02/main.rs)
 
 ``` bash
 aoc-2024$ cargo run --bin 02 --release -q
