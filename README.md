@@ -1,3 +1,6 @@
+[![Rust CI](https://github.com/DrearyLisper/aoc-2024/actions/workflows/rust.yml/badge.svg)](https://github.com/DrearyLisper/aoc-2024/actions/workflows/rust.yml)
+
+
 # Solving AoC 2024 problems in Rust
 
 ![Logo](https://raw.githubusercontent.com/DrearyLisper/aoc-2024/main/images/logo.png)
