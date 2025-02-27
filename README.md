@@ -26,3 +26,13 @@ aoc-2024$ cargo run --bin 02 --release -q
 463
 514
 ```
+
+## Day 3: Mull It Over
+
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/03/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 03 --release -q
+173785482
+83158140
+```
