@@ -36,3 +36,13 @@ aoc-2024$ cargo run --bin 03 --release -q
 173785482
 83158140
 ```
+
+## Day 4: Ceres Search
+
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/04/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 04 --release -q
+2536
+1875
+```
