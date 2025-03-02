@@ -56,3 +56,12 @@ aoc-2024$ cargo run --bin 05 --release -q
 4145
 ```
 
+## Day 6: Guard Gallivant
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/06/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 06 --release -q
+5444
+1946
+```
+
