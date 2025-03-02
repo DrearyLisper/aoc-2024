@@ -46,3 +46,13 @@ aoc-2024$ cargo run --bin 04 --release -q
 2536
 1875
 ```
+
+## Day 5: Print Queue
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/05/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 05 --release -q
+6949
+4145
+```
+
