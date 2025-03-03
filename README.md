@@ -65,3 +65,12 @@ aoc-2024$ cargo run --bin 06 --release -q
 1946
 ```
 
+## Day 7: Bridge Repair
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/07/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 07 --release -q
+12940396350192
+106016735664498
+```
+
