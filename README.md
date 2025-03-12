@@ -74,3 +74,12 @@ aoc-2024$ cargo run --bin 07 --release -q
 106016735664498
 ```
 
+## Day 8: Resonant Collinearity
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/08/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 08 --release -q
+303
+1045
+```
+
