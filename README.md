@@ -92,3 +92,11 @@ aoc-2024$ cargo run --bin 09 --release -q
 6250605700557
 ```
 
+## Day 10: Hoof It
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/10/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 10 --release -q
+667
+1344
+```
