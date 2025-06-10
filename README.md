@@ -83,3 +83,12 @@ aoc-2024$ cargo run --bin 08 --release -q
 1045
 ```
 
+## Day 9: Disk Fragmenter
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/09/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 09 --release -q
+6225730762521
+6250605700557
+```
+
