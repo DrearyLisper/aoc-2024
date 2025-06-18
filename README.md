@@ -109,3 +109,12 @@ aoc-2024$ cargo run --bin 11 --release -q
 209412
 248967696501656
 ```
+
+## Day 12: Garden Groups
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/12/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 12 --release -q
+1434856
+891106
+```
