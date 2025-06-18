@@ -100,3 +100,12 @@ aoc-2024$ cargo run --bin 10 --release -q
 667
 1344
 ```
+
+## Day 11: Plutonian Pebbles
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/11/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 11 --release -q
+209412
+248967696501656
+```
