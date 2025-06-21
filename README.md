@@ -118,3 +118,12 @@ aoc-2024$ cargo run --bin 12 --release -q
 1434856
 891106
 ```
+
+## Day 13: Claw Contraption
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/13/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 13 --release -q
+28753
+102718967795500
+```
