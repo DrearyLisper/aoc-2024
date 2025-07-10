@@ -127,3 +127,13 @@ aoc-2024$ cargo run --bin 13 --release -q
 28753
 102718967795500
 ```
+
+
+## Day 14: Restroom Redoubt
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/14/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 14 --release -q
+230461440
+6668
+```

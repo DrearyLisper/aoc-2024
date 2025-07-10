@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use regex::Regex;
 
@@ -44,8 +44,16 @@ fn quadrant(robot: &Robot, (w, h): (i32, i32)) -> Option<i32> {
         return None;
     }
 
-    let x = if robot.position.0 < (w / 2) { robot.position.0 } else {robot.position.0 - 1};
-    let y = if robot.position.1 < (h / 2) { robot.position.1 } else {robot.position.1 - 1};
+    let x = if robot.position.0 < (w / 2) {
+        robot.position.0
+    } else {
+        robot.position.0 - 1
+    };
+    let y = if robot.position.1 < (h / 2) {
+        robot.position.1
+    } else {
+        robot.position.1 - 1
+    };
 
     Some(x / (w / 2) + 2 * (y / (h / 2)))
 }
@@ -74,18 +82,40 @@ fn part01(content: &String) -> usize {
         .product()
 }
 
-fn part02(content: &String) -> u64 {
-     let mut robots = parse(content);
+fn symmetries(robots: &Vec<Robot>) -> i32 {
+    let mut result = 0;
 
-    let wh = (101, 103);
+    let avg = robots.iter().map(|r| r.position.0).into_iter().sum::<i32>() / (robots.len() as i32);
 
-    for _ in 0..100 {
-        for robot in robots.iter_mut() {
-            iter(robot, wh);
+    let positions: HashSet<(i32, i32)> =
+        HashSet::from_iter(robots.iter().map(|r| (r.position.0, r.position.1)));
+
+    for r in robots {
+        if positions.contains(&(r.position.0 + 2 * (avg - r.position.0), r.position.1)) {
+            result += 1;
         }
     }
 
-    0
+    result
+}
+
+fn part02(content: &String) -> i32 {
+    let mut robots = parse(content);
+
+    let wh = (101, 103);
+
+    let mut trace: Vec<(i32, i32)> = vec![];
+
+    for i in 0..10000 {
+        for robot in robots.iter_mut() {
+            iter(robot, wh);
+        }
+        trace.push((-symmetries(&robots), i));
+    }
+
+    trace.sort();
+
+    trace[0].1 + 1
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
