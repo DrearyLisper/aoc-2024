@@ -137,3 +137,12 @@ aoc-2024$ cargo run --bin 14 --release -q
 230461440
 6668
 ```
+
+## Day 15: Warehouse Woes
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/15/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 15 --release -q 
+1515788
+1516544
+```
