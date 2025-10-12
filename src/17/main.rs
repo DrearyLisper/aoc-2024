@@ -93,7 +93,6 @@ fn cdv(state: &mut State, operand: i8) {
 
 fn run(state: &mut State) {
     while !state.halt {
-        //println!("{:?}", state);
         if state.ip < 0 || state.ip >= state.program.len() as i8 {
             state.halt = true;
             break;
@@ -142,7 +141,6 @@ fn part02(content: &String) -> i128 {
         if state.output == state.program {
             break;
         }
-        //println!("{:?}", state.output);
         a += 1;
     }
     a
