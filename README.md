@@ -146,3 +146,12 @@ aoc-2024$ cargo run --bin 15 --release -q
 1515788
 1516544
 ```
+
+## Day 16: Reindeer Maze
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/16/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 16 --release -q 
+88416
+442
+```
