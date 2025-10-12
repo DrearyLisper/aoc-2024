@@ -155,3 +155,12 @@ aoc-2024$ cargo run --bin 16 --release -q
 88416
 442
 ```
+
+## Day 17: Chronospatial Computer
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/17/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 17 --release -q 
+7,4,2,5,1,4,6,0,4
+164278764924605
+```
