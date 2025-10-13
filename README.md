@@ -164,3 +164,12 @@ aoc-2024$ cargo run --bin 17 --release -q
 7,4,2,5,1,4,6,0,4
 164278764924605
 ```
+
+## Day 18: RAM Run
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/18/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 18 --release -q
+268
+64,11
+```
