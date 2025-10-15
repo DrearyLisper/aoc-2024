@@ -173,3 +173,12 @@ aoc-2024$ cargo run --bin 18 --release -q
 268
 64,11
 ```
+
+## Day 19: Linen Layout
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/19/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 19 --release -q 
+296
+619970556776002
+```
