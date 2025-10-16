@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 use priority_queue::PriorityQueue;
 
@@ -30,49 +30,84 @@ fn parse(content: &String) -> State {
     State { start, end, map }
 }
 
-fn search(state: &State) -> Vec<(i32, i32)> {
-    let mut pq: PriorityQueue<((i32, i32), i32), i32> = PriorityQueue::new();
-    let mut seen: HashSet<((i32, i32), i32)> = HashSet::new();
+fn search(
+    state: &State,
+    (x, y): (i32, i32),
+    seen: &mut HashMap<(i32, i32), i32>,
+    cheat: Vec<(i32, i32)>,
+    length: i32,
+) -> Vec<(i32, Vec<(i32, i32)>)> {
+    if state.end == (x, y) {
+        return vec![(length as i32, cheat)];
+    }
 
+    let mut result = vec![];
 
-    let s = (state.start, 2);
-    pq.push(s, 0);
+    for (dx, dy) in vec![(-1, 0), (1, 0), (0, -1), (0, 1)] {
+        let (nx, ny) = (x + dx, y + dy);
 
-    let mut costs = vec![];
-
-    while pq.len() > 0 {
-        let (((x, y), m), c) = pq.pop().unwrap();
-
-        if -c > 9216 {
+        if nx < 0 || nx >= state.map.len() as i32 {
             continue;
         }
 
-        /*
-        if seen.contains(&((x, y), m)) {
+        if ny < 0 || ny >= state.map[0].len() as i32 {
             continue;
         }
-        seen.insert(((x, y), m));
-        */
 
-        let mut nm = m;
-
-        if state.map[x as usize][y as usize] == '#' {
-            if m == 0 {
+        if seen.contains_key(&(nx, ny)) {
+            if length >= (*seen.get(&(nx, ny)).unwrap() + 100) {
                 continue;
+            } else if length < (*seen.get(&(nx, ny)).unwrap() + 100) {
+                seen.insert((x, y), length);
+            }
+        } else {
+            seen.insert((x, y), length);
+        }
+
+        if state.map[nx as usize][ny as usize] == '#' {
+            if cheat.len() < 1 {
+                let mut ncheat = cheat.clone();
+                ncheat.push((nx, ny));
+
+                let mut nresult = search(state, (nx, ny), seen, ncheat, length + 1);
+
+                result.append(&mut nresult);
             } else {
-                nm -= 1;
+                continue;
             }
-        }
-
-        if m == 1 {
-            nm = 0;
-        }
-
-        if (x, y) == state.end {
-            if -c <= 9216 {
-                costs.push((-c, nm));
+        } else {
+            let mut ncheat = cheat.clone();
+            if cheat.len() == 1 {
+                ncheat.push((nx, ny));
             }
-            continue;
+
+            let mut nresult = search(state, (nx, ny), seen, ncheat, length + 1);
+
+            result.append(&mut nresult);
+        }
+    }
+
+    result
+}
+
+fn search2(state: &State) -> Vec<(i32, Vec<(i32, i32)>)> {
+    let mut queue = PriorityQueue::new();
+
+    queue.push((state.start, vec![], vec![state.start]), 0);
+
+    let mut result = vec![];
+
+    while queue.len() > 0 {
+        let (((x, y), cheat, seen), length) = queue.pop().unwrap();
+
+        println!("{}", length);
+
+        if state.end == (x, y) {
+            result.push((length, cheat.clone()));
+
+            if cheat.len() == 0 {
+                break;
+            }
         }
 
         for (dx, dy) in vec![(-1, 0), (1, 0), (0, -1), (0, 1)] {
@@ -86,17 +121,53 @@ fn search(state: &State) -> Vec<(i32, i32)> {
                 continue;
             }
 
-            pq.push(((nx, ny), nm), c - 1);
+            if seen.contains(&(nx, ny)) {
+                continue;
+            }
+
+            if state.map[nx as usize][ny as usize] == '#' {
+                if cheat.len() < 1 {
+                    let mut nseen = seen.clone();
+                    nseen.push((nx, ny));
+
+                    let mut ncheat = cheat.clone();
+                    ncheat.push((nx, ny));
+
+                    queue.push(((nx, ny), ncheat, nseen), length - 1);
+                } else {
+                    continue;
+                }
+            } else {
+                let mut nseen = seen.clone();
+                nseen.push((nx, ny));
+
+                let mut ncheat = cheat.clone();
+                if cheat.len() == 1 {
+                    ncheat.push((nx, ny));
+                }
+
+                queue.push(((nx, ny), ncheat, nseen), length - 1);
+            }
         }
     }
 
-    costs
+    result
 }
 
 fn part01(content: &String) -> i32 {
     let state = parse(content);
-    println!("{:?}", search(&state));
-    0
+    let mut paths = search2(&state);
+
+    println!("{:?}", paths);
+    //println!("{:?}", paths.iter().map(|i| i.0).collect::<Vec<_>>());
+
+    let longest = paths.iter().filter(|i| i.1.len() == 0).last().unwrap().0;
+
+    paths
+        .iter()
+        .filter(|(i, _)| longest - i >= 100)
+        .collect::<Vec<_>>()
+        .len() as i32
 }
 
 fn part02(content: &String) -> i32 {
