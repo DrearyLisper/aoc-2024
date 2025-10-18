@@ -182,3 +182,12 @@ aoc-2024$ cargo run --bin 19 --release -q
 296
 619970556776002
 ```
+
+## Day 20: Race Condition
+[Full Solution](https://github.com/DrearyLisper/aoc-2024/tree/main/src/20/main.rs)
+
+``` bash
+aoc-2024$ cargo run --bin 20 --release -q
+1429
+988931
+```

@@ -1,8 +1,4 @@
-use std::{
-    cell::{Cell, RefCell},
-    collections::{BinaryHeap, HashMap, HashSet, VecDeque},
-    rc::Rc,
-};
+use std::collections::{HashMap, HashSet};
 
 use priority_queue::PriorityQueue;
 
@@ -37,281 +33,100 @@ fn parse(content: &String) -> State {
     State { start, end, map }
 }
 
-fn search(
-    state: &State,
-    (x, y): (i32, i32),
-    seen: &mut HashMap<(i32, i32), i32>,
-    cheat: Vec<(i32, i32)>,
-    length: i32,
-) -> Vec<(i32, Vec<(i32, i32)>)> {
-    if state.end == (x, y) {
-        return vec![(length as i32, cheat)];
-    }
+fn search(state: &State, radius: i32) -> Vec<(i32, Vec<(i32, i32)>)> {
+    let mut queue: PriorityQueue<(i32, i32), i32> = PriorityQueue::new();
 
-    let mut result = vec![];
+    let mut seen = HashMap::new();
 
-    for (dx, dy) in vec![(-1, 0), (1, 0), (0, -1), (0, 1)] {
-        let (nx, ny) = (x + dx, y + dy);
+    let mut shortest_length = 0;
 
-        if nx < 0 || nx >= state.map.len() as i32 {
-            continue;
-        }
-
-        if ny < 0 || ny >= state.map[0].len() as i32 {
-            continue;
-        }
-
-        if seen.contains_key(&(nx, ny)) {
-            if length >= (*seen.get(&(nx, ny)).unwrap() + 100) {
-                continue;
-            } else if length < (*seen.get(&(nx, ny)).unwrap() + 100) {
-                seen.insert((x, y), length);
-            }
-        } else {
-            seen.insert((x, y), length);
-        }
-
-        if state.map[nx as usize][ny as usize] == '#' {
-            if cheat.len() < 1 {
-                let mut ncheat = cheat.clone();
-                ncheat.push((nx, ny));
-
-                let mut nresult = search(state, (nx, ny), seen, ncheat, length + 1);
-
-                result.append(&mut nresult);
-            } else {
-                continue;
-            }
-        } else {
-            let mut ncheat = cheat.clone();
-            if cheat.len() == 1 {
-                ncheat.push((nx, ny));
-            }
-
-            let mut nresult = search(state, (nx, ny), seen, ncheat, length + 1);
-
-            result.append(&mut nresult);
-        }
-    }
-
-    result
-}
-
-#[derive(Clone, Eq, PartialEq)]
-struct SearchState {
-    point: (i32, i32),
-    cheat: Vec<(i32, i32)>,
-    seen: Rc<RefCell<HashSet<(i32, i32)>>>,
-    length: i32,
-}
-
-impl Ord for SearchState {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.length.cmp(&other.length)
-    }
-}
-
-impl PartialOrd for SearchState {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-fn search2(state: &State) -> Vec<(i32, Vec<(i32, i32)>)> {
-    let mut queue = BinaryHeap::new();
-
-    let search_state = SearchState {
-        point: state.start,
-        cheat: vec![],
-        seen: Rc::new(RefCell::new(HashSet::new())),
-        length: 0,
-    };
-
-    queue.push(search_state);
-
-    let mut result = vec![];
+    queue.push(state.end, 0);
 
     while queue.len() > 0 {
-        let mut search_state = queue.pop().unwrap();
+        let ((x, y), length) = queue.pop().unwrap();
 
-        let (x, y) = search_state.point;
-        let length = search_state.length;
-        let cheat = &search_state.cheat;
-
-        let mut seen = search_state.seen.borrow_mut();
-
-        //println!("{}", length);
-
-        if state.end == (x, y) {
-            let mut s = false;
-            for (_, c) in result.clone() {
-                if c == *cheat {
-                    s = true;
-                }
-            }
-
-            if !s {
-                result.push((length, cheat.clone()));
-            }
-
-            if cheat.len() == 0 {
-                break;
+        if state.start == (x, y) {
+            if shortest_length == 0 {
+                shortest_length = length;
             }
         }
 
-        for (dx, dy) in vec![(-1, 0), (1, 0), (0, -1), (0, 1)] {
-            let (nx, ny) = (x + dx, y + dy);
-
-            if nx < 0 || nx >= state.map.len() as i32 {
-                continue;
-            }
-
-            if ny < 0 || ny >= state.map[0].len() as i32 {
-                continue;
-            }
-
-            if seen.contains(&(nx, ny)) {
-                continue;
-            }
-
-            if state.map[nx as usize][ny as usize] == '#' {
-                if cheat.len() < 1 {
-                    let mut nseen = (*seen).clone();
-                    nseen.insert((nx, ny));
-
-                    let mut ncheat = cheat.clone();
-                    ncheat.push((nx, ny));
-
-                    let search_state = SearchState {
-                        point: (nx, ny),
-                        cheat: ncheat,
-                        seen: Rc::new(RefCell::new(nseen)),
-                        length: length - 1,
-                    };
-
-                    queue.push(search_state);
-                } else {
+        for dx in -1_i32..=1_i32 {
+            for dy in -1_i32..=1_i32 {
+                if dx.abs() + dy.abs() != 1 {
                     continue;
                 }
-            } else {
-                seen.insert((nx, ny));
 
-                let mut ncheat = cheat.clone();
-                if cheat.len() == 1 {
-                    ncheat.push((nx, ny));
+                let (nx, ny) = (x + dx, y + dy);
+
+                if nx < 0 || nx >= state.map.len() as i32 {
+                    continue;
                 }
 
-                let search_state = SearchState {
-                    point: (nx, ny),
-                    cheat: ncheat,
-                    seen: search_state.seen.clone(),
-                    length: length - 1,
-                };
+                if ny < 0 || ny >= state.map[0].len() as i32 {
+                    continue;
+                }
 
-                queue.push(search_state);
+                if state.map[nx as usize][ny as usize] == '#' {
+                    continue;
+                }
+
+                if seen.contains_key(&(nx, ny)) {
+                    continue;
+                }
+
+                seen.insert((nx, ny), ((x, y), length));
+
+                queue.push((nx, ny), length - 1);
             }
         }
     }
 
-    result
-}
+    let ((mut x, mut y), mut length) = (state.start, shortest_length);
+    let mut seen_cheats: HashSet<((i32, i32), (i32, i32))> = HashSet::new();
+    let mut result: Vec<(i32, Vec<(i32, i32)>)> = vec![(-shortest_length, vec![])];
 
-fn search3(state: &State) -> Vec<(i32, Vec<(i32, i32)>)> {
-    let mut queue = BinaryHeap::new();
-
-    let search_state = SearchState {
-        point: state.start,
-        cheat: vec![],
-        seen: Rc::new(RefCell::new(HashSet::new())),
-        length: 0,
-    };
-
-    queue.push(search_state);
-
-    let mut result = vec![];
-
-    while queue.len() > 0 {
-        let mut search_state = queue.pop().unwrap();
-
-        let (x, y) = search_state.point;
-        let length = search_state.length;
-        let cheat = &search_state.cheat;
-
-        let mut seen = search_state.seen.borrow_mut();
-
-        //println!("{}", length);
-
-        if state.end == (x, y) {
-            let mut s = false;
-            for (_, c) in result.clone() {
-                if c == *cheat {
-                    s = true;
-                }
-            }
-
-            if !s {
-                result.push((length, cheat.clone()));
-            }
-
-            if cheat.len() == 0 {
-                break;
-            }
-        }
-
-        for (dx, dy) in vec![(-1, 0), (1, 0), (0, -1), (0, 1)] {
-            let (nx, ny) = (x + dx, y + dy);
-
-            if nx < 0 || nx >= state.map.len() as i32 {
-                continue;
-            }
-
-            if ny < 0 || ny >= state.map[0].len() as i32 {
-                continue;
-            }
-
-            if seen.contains(&(nx, ny)) {
-                continue;
-            }
-
-            if state.map[nx as usize][ny as usize] == '#' {
-                if cheat.len() < 20 {
-                    if cheat.len() == 0 {
-                        let mut nseen = (*seen).clone();
-                        nseen.insert((nx, ny));
-
-                        let mut ncheat = cheat.clone();
-                        ncheat.push((nx, ny));
-
-                        let search_state = SearchState {
-                            point: (nx, ny),
-                            cheat: ncheat,
-                            seen: Rc::new(RefCell::new(nseen)),
-                            length: length - 1,
-                        };
-
-                        queue.push(search_state);
-                    }
-                } else {
+    while (x, y) != state.end {
+        for dx in -radius..=radius {
+            for dy in -radius..=radius {
+                if dx.abs() + dy.abs() <= 1 {
                     continue;
                 }
-            } else {
-                seen.insert((nx, ny));
-
-                let mut ncheat = cheat.clone();
-                if cheat.len() > 0 {
-                    ncheat.push((nx, ny));
+                if dx.abs() + dy.abs() > radius {
+                    continue;
                 }
 
-                let search_state = SearchState {
-                    point: (nx, ny),
-                    cheat: ncheat,
-                    seen: search_state.seen.clone(),
-                    length: length - 1,
-                };
+                let (nx, ny) = (x + dx, y + dy);
 
-                queue.push(search_state);
+                if nx < 0 || nx >= state.map.len() as i32 {
+                    continue;
+                }
+
+                if ny < 0 || ny >= state.map[0].len() as i32 {
+                    continue;
+                }
+
+                if state.map[nx as usize][ny as usize] == '#' {
+                    continue;
+                }
+
+                let cheat = ((x, y), (nx, ny));
+
+                if seen_cheats.contains(&cheat) {
+                    continue;
+                }
+
+                seen_cheats.insert(cheat);
+
+                result.push((
+                    (length - shortest_length) + dx.abs() + dy.abs()
+                        - seen.get(&(nx, ny)).unwrap().1,
+                    vec![(x, y), (nx, ny)],
+                ));
             }
         }
+
+        ((x, y), length) = *seen.get(&(x, y)).unwrap();
     }
 
     result
@@ -319,46 +134,34 @@ fn search3(state: &State) -> Vec<(i32, Vec<(i32, i32)>)> {
 
 fn part01(content: &String) -> i32 {
     let state = parse(content);
-    let mut paths = search2(&state);
-
-    paths.sort();
-    paths.dedup();
-
-    println!("{:?}", paths);
-    //println!("{:?}", paths.iter().map(|i| i.0).collect::<Vec<_>>());
+    let paths = search(&state, 2);
 
     let longest = paths.iter().filter(|i| i.1.len() == 0).last().unwrap().0;
 
     paths
         .iter()
-        .filter(|(i, _)| (-longest) + i >= 100)
+        .filter(|(i, _)| longest - i >= 100)
         .collect::<Vec<_>>()
         .len() as i32
 }
 
 fn part02(content: &String) -> i32 {
     let state = parse(content);
-    let mut paths = search3(&state);
-
-    paths.sort();
-    paths.dedup();
-
-    println!("{:?}", paths);
-    //println!("{:?}", paths.iter().map(|i| i.0).collect::<Vec<_>>());
+    let paths = search(&state, 20);
 
     let longest = paths.iter().filter(|i| i.1.len() == 0).last().unwrap().0;
 
     paths
         .iter()
-        .filter(|(i, _)| (-longest) + i >= 100)
+        .filter(|(i, _)| longest - i >= 100)
         .collect::<Vec<_>>()
         .len() as i32
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let content = aoc_2024::io::read_test("20")?;
+    let content = aoc_2024::io::read_input("20")?;
 
-    //println!("{}", part01(&content));
+    println!("{}", part01(&content));
     println!("{}", part02(&content));
 
     Ok(())
